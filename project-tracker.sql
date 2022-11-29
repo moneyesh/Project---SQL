@@ -21,6 +21,42 @@ SET default_tablespace = '';
 SET default_table_access_method = heap;
 
 --
+-- Name: grades; Type: TABLE; Schema: public; Owner: icuadra
+--
+
+CREATE TABLE public.grades (
+    id integer NOT NULL,
+    student_github character varying(30),
+    project_title character varying(30),
+    grade integer
+);
+
+
+ALTER TABLE public.grades OWNER TO icuadra;
+
+--
+-- Name: grades_id_seq; Type: SEQUENCE; Schema: public; Owner: icuadra
+--
+
+CREATE SEQUENCE public.grades_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public.grades_id_seq OWNER TO icuadra;
+
+--
+-- Name: grades_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: icuadra
+--
+
+ALTER SEQUENCE public.grades_id_seq OWNED BY public.grades.id;
+
+
+--
 -- Name: projects; Type: TABLE; Schema: public; Owner: icuadra
 --
 
@@ -70,10 +106,29 @@ ALTER SEQUENCE public.students_id_seq OWNED BY public.students.id;
 
 
 --
+-- Name: grades id; Type: DEFAULT; Schema: public; Owner: icuadra
+--
+
+ALTER TABLE ONLY public.grades ALTER COLUMN id SET DEFAULT nextval('public.grades_id_seq'::regclass);
+
+
+--
 -- Name: students id; Type: DEFAULT; Schema: public; Owner: icuadra
 --
 
 ALTER TABLE ONLY public.students ALTER COLUMN id SET DEFAULT nextval('public.students_id_seq'::regclass);
+
+
+--
+-- Data for Name: grades; Type: TABLE DATA; Schema: public; Owner: icuadra
+--
+
+COPY public.grades (id, student_github, project_title, grade) FROM stdin;
+1	jhacks	Markov	10
+2	jhacks	Blockly	2
+4	sdeveloper	Blockly	100
+5	sdeveloper	Markov	50
+\.
 
 
 --
@@ -100,10 +155,25 @@ COPY public.students (id, github, first_name, last_name) FROM stdin;
 
 
 --
+-- Name: grades_id_seq; Type: SEQUENCE SET; Schema: public; Owner: icuadra
+--
+
+SELECT pg_catalog.setval('public.grades_id_seq', 5, true);
+
+
+--
 -- Name: students_id_seq; Type: SEQUENCE SET; Schema: public; Owner: icuadra
 --
 
 SELECT pg_catalog.setval('public.students_id_seq', 3, true);
+
+
+--
+-- Name: grades grades_pkey; Type: CONSTRAINT; Schema: public; Owner: icuadra
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grades_pkey PRIMARY KEY (id);
 
 
 --
@@ -120,6 +190,22 @@ ALTER TABLE ONLY public.projects
 
 ALTER TABLE ONLY public.students
     ADD CONSTRAINT students_pkey PRIMARY KEY (github);
+
+
+--
+-- Name: grades grades_project_title_fkey; Type: FK CONSTRAINT; Schema: public; Owner: icuadra
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grades_project_title_fkey FOREIGN KEY (project_title) REFERENCES public.projects(title);
+
+
+--
+-- Name: grades grades_student_github_fkey; Type: FK CONSTRAINT; Schema: public; Owner: icuadra
+--
+
+ALTER TABLE ONLY public.grades
+    ADD CONSTRAINT grades_student_github_fkey FOREIGN KEY (student_github) REFERENCES public.students(github);
 
 
 --
